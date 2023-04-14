@@ -17,44 +17,59 @@ $Nom = isset($_GET['Nom']) ? $_GET['Nom'] : NULL;
 if (! empty($Nom)) {
       $connexion->inserer("test", "Id,Nom", "NULL,'$Nom'");
 }
-$liste_personnels = $connexion->consulter("Id,nom", "test", "", "", "", "", "", "");
+$liste_personnels = $connexion->consulter("Nom,Prenom,Naiss,Adresse,CodePostal,Ville,Telephone,Mail,Secu", "test", "", "", "", "", "", "");
 $i = 0;
 foreach ($liste_personnels as $data) {
     $i ++;
-    $Id = ! empty($data['Id']) ? utf8_encode($data['Id']) : "";
-    $nom = ! empty($data['nom']) ? utf8_encode($data['nom']) : "";
+    $Nom = ! empty($data['Nom']) ? utf8_encode($data['Nom']) : "";
+	$Prenom = ! empty($data['Prenom']) ? utf8_encode($data['Prenom']) : "";
+	$Date = ! empty($data['Naiss']) ? utf8_encode($data['Naiss']) : "";
+	$Adresse = ! empty($data['Adresse']) ? utf8_encode($data['Adresse']) : "";
+	$CodePostal = ! empty($data['CodePostal']) ? utf8_encode($data['CodePostal']) : "";
+	$Ville = ! empty($data['Ville']) ? utf8_encode($data['Ville']) : "";
+	$Telephone = ! empty($data['Telephone']) ? utf8_encode($data['Telephone']) : "";
+	$Mail = ! empty($data['Mail']) ? utf8_encode($data['Mail']) : "";
+	$Secu = ! empty($data['Secu']) ? utf8_encode($data['Secu']) : "";
     $liste .= <<<EOF
     <tr>
-    	<td>$Id</td><td>$nom</td>
+    	<td>$Nom $Prenom</td>
+		<td>$Date</td>
+		<td>$Adresse,$CodePostal,$Ville</td>
+		<td>$Telephone</td>
+		<td>$Mail</td>
+		<td>$Secu</td>
+		<td>
+			<div class="btn-group">
+				<input type="button" onclick="edit()" value="Modif"/>
+				<input type="button" onclick="suppr()" value="Suppr"/>
+			</div>
+		</td>
     </tr>
     EOF;
 }
 $contenu_page = <<<EOF
-<div id="div_flow">
-<table class="border">
-	<tr id="entete_tableau">
-		<td>Id</td>
-		<td>Nom</td>
-	</tr>
-	$liste
-<!--    <tr>
-        <td align="center" >
-        <label> <br />
-            <input type="submit" name="bouton_valider" value=" Valider " />
-        </label>
-        <label>
-            <input type="reset" name="Nom" value="Annuler" />
-        </label></td>
-    </tr>  -->
-</table>
-</div>
-</form>
+    <div id="div_flow">
+        <table>
+            <tr id="entete_tableau">
+                <th>Nom</th>
+                <th>Date Naissance</th>
+                <th>Adresse</th>
+                <th>Téléphone</th>
+                <th>Mail</th>
+                <th>N° Sécurité Sociale</th>
+                <th>Actions</th>
+            </tr>
+            $liste
+        </table>
+    </div>
+
 EOF;
 echo <<<EOF
  <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8" />
+<link rel="stylesheet" href="apparence.css">
 <title>Test SI</title>
 </head>
 <body>
@@ -70,7 +85,7 @@ Application de test SI - Leo QUILLOT & Felix DELESALLE
 </div>
 <div>
 	<p>Saisir la date</p>
-	<p><input type="date" name="Date"  /></p>
+	<p><input type="date" name="Naiss"  /></p>
 </div>
 <div>
 	<p>Saisir l'adresse</p>
