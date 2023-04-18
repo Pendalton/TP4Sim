@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="apparence.css">
+    <title>Test SI</title>
+</head>
+<body>
+    <div class="tab">
+        <button class="tablinks" onclick="openCity(event, 'formulaire')" id="defaultOpen">Formulaire</button>
+        <button class="tablinks" onclick="openCity(event, 'donnees')">Données</button>
+    </div>
+
+    <div id="formulaire" class="tabcontent">
+        <form action="index.php" method="GET" enctype="application/x-www-form-urlencoded">
+            <div style="display:flex">
+                <div style="margin-right:5px">
+                    <p>Saisir le nom :</p>
+                    <input type="text" name="Nom" placeholder="NOM" />
+                    <input type="text" name="Prenom" placeholder="Prénom" />
+                </div>
+                <div style="margin-left:5px">
+                    <p>Saisir la date de naissance :</p>
+                    <input type="date" name="Naiss" />
+                </div>
+            </div>
+
+            <div>
+                <p>Saisir l'adresse :</p>
+                <input type="text" name="Adresse" placeholder="Adresse" />
+                <input type="text" name="CodePostal" placeholder="Code Postal" />
+                <input type="text" name="Ville" placeholder="Ville" />
+            </div>
+
+            <div style="display:flex">
+                <div style="margin-right:5px">
+                    <p>Saisir le numéro de téléphone :</p>
+                    <input type="tel" name="Telephone" style="width:200px" />
+                </div>
+                <div style="margin-left:5px">
+                    <p>Saisir l'adresse mail :</p>
+                    <input type="email" name="Mail" style="width:200px" />
+                </div>
+            </div>
+            <div>
+                <p>Saisir le numéro de sécurité sociale :</p>
+                <input type="text" name="Secu" />
+            </div>
+            <br />
+            <div>
+                <input name="bouton_valider" type="submit" value="Valider" />
+            </div>
+        </form>
+    </div>
+
+    <div class="tabcontent" id="donnees">
+        <div id="div_flow">
+            <table class="center">
+                <tr>
+                    <th>Nom</th>
+                    <th>Date Naissance</th>
+                    <th>Adresse</th>
+                    <th>Téléphone</th>
+                    <th>Mail</th>
+                    <th>N° Sécurité Sociale</th>
+                    <th>Actions</th>
+                </tr>
+                <tr>
+                    <td>QUILLOT Léo</td>
+                    <td>25/03/2000</td>
+                    <td>90 bis Rue Saint Ausone, 16000, Angoulême</td>
+                    <td>01 23 45 56 78</td>
+                    <td>leo.quillot.auditeur@lecnam.net</td>
+                    <td>012345678987654321</td>
+                    <td>
+                        <div class="btn-group">
+                            <input type="button" onclick="edit()" value="Modif" />
+                            <input type="button" onclick="suppr()" value="Suppr" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>DELESALLE Felix</td>
+                    <td>25/10/2000</td>
+                    <td>11 rue de Paris, 14100, Lisieux</td>
+                    <td>01 23 45 56 78</td>
+                    <td>felix.delesalle.auditeur@lecnam.net</td>
+                    <td>012345678987654321</td>
+                    <td>
+                        <div>
+                            <input type="button" onclick="edit()" value="Modif"/>
+                            <input type="button" onclick="suppr()" value="Suppr"/>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <br/>
+    Application de test SI - Leo QUILLOT & Felix DELESALLE
+    <script>
+        document.getElementById("defaultOpen").click();
+
+        function openCity(evt, cityName) {
+            // Declare all variables
+            var i, tabcontent, tablinks;
+
+            // Get all elements with class="tabcontent" and hide them
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            // Get all elements with class="tablinks" and remove the class "active"
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            // Show the current tab, and add an "active" class to the button that opened the tab
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
+</body>
+</html>

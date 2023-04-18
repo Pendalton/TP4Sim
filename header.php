@@ -1,3 +1,5 @@
+
+
 <?php
  //echo " <div style=\"color:#ff00ff;\"> GET<pre>", print_r ( $_GET ), "</pre></div>";
 $liste = ! empty($liste) ? $liste : null;
@@ -9,19 +11,35 @@ $json = json_decode($str, true); // decode the JSON into an associative array
 $code_postal_array = array();
 
 for($i = 0; $i<sizeof($json); $i++)
-{
-	array_push($code_postal_array, $json[$i]['fields']['code_postal']);
+{	
+	//$code = substr($json[$i]['fields']['code_postal'], 0, -1);
+	$code = $json[$i]['fields']['code_postal'];
+	$town = $json[$i]['fields']['nom_de_la_commune'];
+	//echo " <div style=\"color:#ff00ff;\"> GET<pre>", print_r ( $json[$i]['fields'] ), "</pre></div>";
+	if(!in_array($code, $code_postal_array))
+	{
+		$code_postal_array[$code] = array();
+	}
+	array_push($code_postal_array[$code], $town);
+
+}
+
+ksort($code_postal_array);
+
+foreach (array_keys($code_postal_array) as $option) {
+	echo " <div style=\"color:#ff00ff;\"> GET<pre>", print_r ( $option ), print_r($code_postal_array[$option]), "</pre></div>";
 }
 
 $Nom = isset($_GET['Nom']) ? $_GET['Nom'] : NULL;
 if (! empty($Nom)) {
       $connexion->inserer("test", "Id,Nom", "NULL,'$Nom'");
 }
-$liste_personnels = $connexion->consulter("Nom,Prenom,Naiss,Adresse,CodePostal,Ville,Telephone,Mail,Secu", "test", "", "", "", "", "", "");
-$i = 0;
-foreach ($liste_personnels as $data) {
-    $i ++;
-    $Nom = ! empty($data['Nom']) ? utf8_encode($data['Nom']) : "";
+//$liste_personnels = $connexion->consulter("Nom,Prenom,Naiss,Adresse,CodePostal,Ville,Telephone,Mail,Secu", "test", "", "", "", "", "", "");
+//$i = 0;
+//foreach ($liste_personnels as $data) {
+	//$i ++;
+	/*
+	$Nom = ! empty($data['Nom']) ? utf8_encode($data['Nom']) : "";
 	$Prenom = ! empty($data['Prenom']) ? utf8_encode($data['Prenom']) : "";
 	$Date = ! empty($data['Naiss']) ? utf8_encode($data['Naiss']) : "";
 	$Adresse = ! empty($data['Adresse']) ? utf8_encode($data['Adresse']) : "";
@@ -34,7 +52,7 @@ foreach ($liste_personnels as $data) {
     <tr>
     	<td>$Nom $Prenom</td>
 		<td>$Date</td>
-		<td>$Adresse,$CodePostal,$Ville</td>
+		<td>$Adresse, $CodePostal, $Ville</td>
 		<td>$Telephone</td>
 		<td>$Mail</td>
 		<td>$Secu</td>
@@ -46,35 +64,11 @@ foreach ($liste_personnels as $data) {
 		</td>
     </tr>
     EOF;
-}
-$contenu_page = <<<EOF
-    <div id="div_flow">
-        <table>
-            <tr id="entete_tableau">
-                <th>Nom</th>
-                <th>Date Naissance</th>
-                <th>Adresse</th>
-                <th>Téléphone</th>
-                <th>Mail</th>
-                <th>N° Sécurité Sociale</th>
-                <th>Actions</th>
-            </tr>
-            $liste
-        </table>
-    </div>
+}*/
 
-EOF;
-echo <<<EOF
- <!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="utf-8" />
-<link rel="stylesheet" href="apparence.css">
-<title>Test SI</title>
-</head>
-<body>
-Application de test SI - Leo QUILLOT & Felix DELESALLE
-<form action="index.php" method="GET" enctype="application/x-www-form-urlencoded">
+?>
+//Application de test SI - Leo QUILLOT & Felix DELESALLE
+<form action="index.php" method="GET" autocomplete="off" enctype="application/x-www-form-urlencoded">
 <div>
 	<p>Saisir le nom</p>
 	<p><input type="text" name="Nom"  /></p>
@@ -88,9 +82,69 @@ Application de test SI - Leo QUILLOT & Felix DELESALLE
 	<p><input type="date" name="Naiss"  /></p>
 </div>
 <div>
-	<p>Saisir l'adresse</p>
+	<p>Saisir adresse</p>
 	<p><input type="text" name="Adresse"  /></p>
-    <p><input type="text" name="CodePostal"  /></p>
+	<script>
+		const js_code_postal_array = [<?php echo '"'.implode('","',  array_keys($code_postal_array) ).'"' ?>]
+	const dlOptions = js_code_postal_array.map(o => {
+    return [`<option value="${o}"></option>`, o.toLowerCase()];
+	});
+
+	function completeDataList(e, tag, list_tag, max_ch=99999) {
+		var text = document.getElementById(tag).value;
+    	const fill = val => document.getElementById(list_tag).innerHTML = val;
+    	if(!e.target.value) 
+		{
+        	fill(dlOptions.reduce((sum, [html]) => sum + html, ''));
+    	} 
+		else if(!(e instanceof InputEvent)) { // OR: else if(!e.inputType)
+        	e.target.blur();
+    	} 
+		else 
+		{
+        	const inputValue = e.target.value.toLowerCase();
+        	let result = '';
+			if(text.length < max_ch)
+			{
+        		for (const [html, valuePattern] of dlOptions) 
+				{
+            		if (!valuePattern.indexOf(inputValue)) 
+					{
+                		result += html;
+            		} 
+					else if (result) 
+					{
+                		break;
+            		}
+        		}
+			}
+        	fill(result);
+    	}
+	}
+
+	function fillDataListIfEmpty(tag, list_tag, max_ch=99999) {
+		var text = document.getElementById(tag).value;
+    	if(!document.getElementById(list_tag).innverHTML && text.length < max_ch) 
+		{
+        	completeDataList({ target: {} });
+    	}
+	}
+
+	function checkValidState(tag, max_ch=99999) {
+		var text = document.getElementById(tag).value;
+		if(text.length < max_ch || !js_code_postal_array.includes(text))
+		{
+			document.getElementById(tag).style.backgroundColor = "red";
+		}
+		else
+		{
+			document.getElementById(tag).style.backgroundColor = null;
+		}
+	}
+	</script>
+	<input type="text" name="CodePostal" minlength="5" maxlength="5" required id="code_postal_tag" list="code_postal_list" oninput="completeDataList(event, 'code_postal_tag', 'code_postal_list', 5)" onfocus="fillDataListIfEmpty('code_postal_tag', 'code_postal_list', 5)" onfocusout="checkValidState('code_postal_tag', 5)">
+	<datalist id="code_postal_list"></datalist>
+
     <p><input type="text" name="Ville"  /></p>
 </div>
 <div>
@@ -98,7 +152,7 @@ Application de test SI - Leo QUILLOT & Felix DELESALLE
 	<p><input type="tel" name="Telephone"  /></p>
 </div>
 <div>
-	<p>Saisir l'adresse mail</p>
+	<p>Saisir adresse mail</p>
 	<p><input type="email" name="Mail"  /></p>
 </div>
 <div>
@@ -108,10 +162,9 @@ Application de test SI - Leo QUILLOT & Felix DELESALLE
 <div>
 	<p><input name="bouton_valider" type="submit" value="Valider" /></p>
 </div>
-<div>
-$contenu_page
-</div>
 </form>
-</body>
+<div>
+<?php
+echo $contenu_page;
+?>
 
-EOF;
