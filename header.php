@@ -34,7 +34,7 @@ foreach ($liste_personnels as $data) {
     <tr>
     	<td>$Nom $Prenom</td>
 		<td>$Date</td>
-		<td>$Adresse,$CodePostal,$Ville</td>
+		<td>$Adresse, $CodePostal, $Ville</td>
 		<td>$Telephone</td>
 		<td>$Mail</td>
 		<td>$Secu</td>
@@ -49,7 +49,7 @@ foreach ($liste_personnels as $data) {
 }
 $contenu_page = <<<EOF
     <div id="div_flow">
-        <table>
+        <table class="center">
             <tr id="entete_tableau">
                 <th>Nom</th>
                 <th>Date Naissance</th>
@@ -73,45 +73,80 @@ echo <<<EOF
 <title>Test SI</title>
 </head>
 <body>
-Application de test SI - Leo QUILLOT & Felix DELESALLE
+
+    <div class="tab">
+        <button class="tablinks" onclick="openCity(event, 'formulaire')" id="defaultOpen">Formulaire</button>
+        <button class="tablinks" onclick="openCity(event, 'donnees')">Données</button>
+    </div>
+
+	<div id="formulaire" class="tabcontent">
+	
 <form action="index.php" method="GET" enctype="application/x-www-form-urlencoded">
-<div>
-	<p>Saisir le nom</p>
-	<p><input type="text" name="Nom"  /></p>
+    <div style="display:flex">
+        <div style="margin-right:5px">
+            <p>Saisir le nom :</p>
+            <input type="text" name="Nom" placeholder="NOM" />
+            <input type="text" name="Prenom" placeholder="Prénom" />
+        </div>
+        <div style="margin-left:5px">
+            <p>Saisir la date de naissance :</p>
+            <input type="date" name="Naiss" />
+        </div>
+    </div>
+    <div>
+    	<p>Saisir l'adresse</p>
+    	<input type="text" name="Adresse" placeholder="Adresse"/>
+    	<input type="text" name="CodePostal" placeholder="Code Postal"/>
+    	<input type="text" name="Ville" placeholder="Ville"/>
+    </div>
+    <div style="display:flex">
+        <div style="margin-right:5px">
+            <p>Saisir le numéro de téléphone :</p>
+            <input type="tel" name="Telephone" style="width:200px" />
+        </div>
+        <div style="margin-left:5px">
+            <p>Saisir l'adresse mail :</p>
+            <input type="email" name="Mail" style="width:200px" />
+        </div>
+    </div>
+    <div>
+	    <p>Saisir le numero de securite social</p>
+	    <input type="text" name="Secu" />
+    </div>
+    <div>
+	    <input name="bouton_valider" type="submit" value="Valider" />
+    </div>
 </div>
-<div>
-	<p>Saisir le prenom</p>
-	<p><input type="text" name="Prenom"  /></p>
-</div>
-<div>
-	<p>Saisir la date</p>
-	<p><input type="date" name="Naiss"  /></p>
-</div>
-<div>
-	<p>Saisir l'adresse</p>
-	<p><input type="text" name="Adresse"  /></p>
-    <p><input type="text" name="CodePostal"  /></p>
-    <p><input type="text" name="Ville"  /></p>
-</div>
-<div>
-	<p>Saisir le numero de telephone</p>
-	<p><input type="tel" name="Telephone"  /></p>
-</div>
-<div>
-	<p>Saisir l'adresse mail</p>
-	<p><input type="email" name="Mail"  /></p>
-</div>
-<div>
-	<p>Saisir le numero de securite social</p>
-	<p><input type="text" name="Secu"  /></p>
-</div>
-<div>
-	<p><input name="bouton_valider" type="submit" value="Valider" /></p>
-</div>
-<div>
-$contenu_page
-</div>
-</form>
+    </form>
+    <div class="tabcontent" id="donnees">
+        $contenu_page
+    </div>
+    <br/>
+    Application de test SI - Leo QUILLOT & Felix DELESALLE
+        <script>
+        document.getElementById("defaultOpen").click();
+
+        function openCity(evt, cityName) {
+            // Declare all variables
+            var i, tabcontent, tablinks;
+
+            // Get all elements with class="tabcontent" and hide them
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            // Get all elements with class="tablinks" and remove the class "active"
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            // Show the current tab, and add an "active" class to the button that opened the tab
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
 </body>
 
 EOF;
