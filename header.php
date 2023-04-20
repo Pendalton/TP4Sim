@@ -77,22 +77,43 @@ echo <<<EOF
     <div class="tab">
         <button class="tablinks" onclick="openCity(event, 'formulaire')" id="defaultOpen">Formulaire</button>
         <button class="tablinks" onclick="openCity(event, 'donnees')">Données</button>
+
+        <button class="tablinks" id="modalBtn" style="float:right">Se connecter</button>
+    </div>
+
+    <div id="LoginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Connexion</h2>
+            </div>
+            <div class="modal-body" style="padding-top:20px">
+                <div style="display:flex; flex-direction:column; align-items:center">
+                    <input type="text" name="Login" placeholder="Utilisateur" style="width:300px;margin-bottom:8px" />
+                    <input type="password" name="password" placeholder="Mot de passe" style="width: 300px; margin-top: 8px;margin-bottom:16px" />
+                    <input name="bouton_valider" type="submit" value="Connexion" style="width:150px" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <h3>InkPlant</h3>
+            </div>
+        </div>
     </div>
 
 	<div id="formulaire" class="tabcontent">
 	
 <form action="index.php" method="GET" enctype="application/x-www-form-urlencoded">
     <div style="display:flex">
-        <div style="margin-right:5px">
-            <p>Saisir le nom :</p>
-            <input type="text" name="Nom" placeholder="NOM" />
-            <input type="text" name="Prenom" placeholder="Prénom" />
-        </div>
-        <div style="margin-left:5px">
-            <p>Saisir la date de naissance :</p>
-            <input type="date" name="Naiss" />
-        </div>
-    </div>
+                <div style="margin-right:10px">
+                    <p>Saisir le nom :</p>
+                    <input type="text" name="Nom" placeholder="NOM" />
+                    <input type="text" name="Prenom" placeholder="Prénom" />
+                </div>
+                <div>
+                    <p>Saisir la date de naissance :</p>
+                    <input type="date" name="Naiss" />
+                </div>
+            </div>
     <div>
     	<p>Saisir l'adresse</p>
     	<input type="text" name="Adresse" placeholder="Adresse"/>
@@ -100,19 +121,25 @@ echo <<<EOF
     	<input type="text" name="Ville" placeholder="Ville"/>
     </div>
     <div style="display:flex">
-        <div style="margin-right:5px">
-            <p>Saisir le numéro de téléphone :</p>
-            <input type="tel" name="Telephone" style="width:200px" />
-        </div>
-        <div style="margin-left:5px">
-            <p>Saisir l'adresse mail :</p>
-            <input type="email" name="Mail" style="width:200px" />
-        </div>
-    </div>
-    <div>
-	    <p>Saisir le numero de securite social</p>
-	    <input type="text" name="Secu" />
-    </div>
+                <div style="margin-right:10px">
+                    <p>Saisir le numéro de téléphone :</p>
+                    <input type="tel" name="Telephone" style="width:100%" />
+                </div>
+                <div style="margin-left:10px">
+                    <p>Saisir l'adresse mail :</p>
+                    <input type="email" name="Mail" style="width:200px" />
+                </div>
+            </div>
+    <div style="display:flex">
+                <div style="margin-right:10px">
+                    <p>Saisir le numéro de sécurité sociale :</p>
+                    <input type="text" name="Secu" style="width:100%"/>
+                </div>
+                <div style="margin-left:10px">
+                    <p>Saisir le mot de passe :</p>
+                    <input type="text" name="Password" />
+                </div>
+            </div>
     <div>
 	    <input name="bouton_valider" type="submit" value="Valider" />
     </div>

@@ -5,7 +5,7 @@
     font-family:Arial;
 }
 
-img.background {
+img.background { /*Fond d'écran*/
     position: absolute;
     left: 0px;
     top: 0px;
@@ -13,13 +13,13 @@ img.background {
     width: 100%;
     height: 100%;
     -webkit-filter: blur(8px); /* Safari 6.0 - 9.0 */
-    filter: blur(8px);
+    filter: blur(10px);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
 
-table, th, td {
+table, th, td { /*POur la lisibilité du tableau*/
     border: 1px solid black;
     border-collapse: collapse;
     padding:8px;
@@ -30,7 +30,7 @@ table, th, td {
     margin-right: auto;
 }
 
-tr:nth-child(odd) {
+tr:nth-child(odd) { /*Cette classe et la prochaine font alterner les couleurs des lignes pour mieux les différencer*/
     background-color: #f2f2f2;
 }
 tr:nth-child(even) {
@@ -88,9 +88,10 @@ th{
     }
 }
 
-input[type="text"], input[type="tel"], input[type="email"], input[type="date"] {
+input[type="text"], input[type="tel"], input[type="email"], input[type="date"], input[type="password"] {
     width: 200px;
     height: 25px;
+    margin-right:5px
 }
 
 input[type="button"], input[type="submit"] {
@@ -151,7 +152,7 @@ input[type="button"], input[type="submit"] {
     margin: auto;
     padding: 0;
     border: 1px solid #888;
-    width: 60%;
+    width: 30%;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     animation-name: animatetop;
     animation-duration: 0.4s;
