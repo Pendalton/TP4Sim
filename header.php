@@ -28,6 +28,8 @@ ksort($code_postal_array);
 if (! empty($Nom)) {
       $connexion->inserer("test", "Id,Nom", "NULL,'$Nom'");
 }
+
+// NEW
 $liste_personnels = $connexion->consulter("Nom,Prenom,Naiss,Adresse,CodePostal,Ville,Telephone,Mail,Secu", "test", "", "", "", "", "", "");
 $i = 0;
 foreach ($liste_personnels as $data) {
@@ -56,7 +58,7 @@ foreach ($liste_personnels as $data) {
 			</div>
 		</td>
     </tr>
-    EOF;
+EOF;
 }
 $contenu_page = <<<EOF
     <div id="div_flow">
@@ -65,14 +67,15 @@ $contenu_page = <<<EOF
                 <th>Nom</th>
                 <th>Date Naissance</th>
                 <th>Adresse</th>
-                <th>T�l�phone</th>
+                <th>Téléphone</th>
                 <th>Mail</th>
-                <th>N� S�curit� Sociale</th>
+                <th>N° Sécurité Sociale</th>
                 <th>Actions</th>
             </tr>
             $liste
         </table>
     </div>
+EOF;
 ?>
 
 <script>
@@ -149,8 +152,8 @@ $contenu_page = <<<EOF
 			document.getElementById(tag).style.backgroundColor = null;
 		}
 	}
-	</script>
- <!DOCTYPE html>
+</script>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8" />
@@ -161,7 +164,7 @@ $contenu_page = <<<EOF
 
     <div class="tab">
         <button class="tablinks" onclick="openCity(event, 'formulaire')" id="defaultOpen">Formulaire</button>
-        <button class="tablinks" onclick="openCity(event, 'donnees')">Donn�es</button>
+        <button class="tablinks" onclick="openCity(event, 'donnees')">Données</button>
     </div>
 
 	<div id="formulaire" class="tabcontent">
@@ -171,7 +174,7 @@ $contenu_page = <<<EOF
         <div style="margin-right:5px">
             <p>Saisir le nom :</p>
             <input type="text" name="Nom" placeholder="NOM" />
-            <input type="text" name="Prenom" placeholder="Pr�nom" />
+            <input type="text" name="Prenom" placeholder="Prénom" />
         </div>
         <div style="margin-left:5px">
             <p>Saisir la date de naissance :</p>
@@ -181,12 +184,13 @@ $contenu_page = <<<EOF
     <div>
     	<p>Saisir l'adresse</p>
     	<input type="text" name="Adresse" placeholder="Adresse"/>
-    	<input type="text" name="CodePostal" placeholder="Code Postal"/>
+		<input type="text" name="CodePostal" placeholder="Code Postal" minlength="5" maxlength="5" required id="code_postal_tag" list="code_postal_list" oninput="completeDataList(event, 'code_postal_tag', 'code_postal_list', 5)" onfocus="fillDataListIfEmpty('code_postal_tag', 'code_postal_list', 5)" onfocusout="checkValidState('code_postal_tag', 5)"/>
+		<datalist id="code_postal_list"></datalist>
     	<input type="text" name="Ville" placeholder="Ville"/>
     </div>
     <div style="display:flex">
         <div style="margin-right:5px">
-            <p>Saisir le num�ro de t�l�phone :</p>
+            <p>Saisir le numéro de téléphone :</p>
             <input type="tel" name="Telephone" style="width:200px" />
         </div>
         <div style="margin-left:5px">
@@ -204,7 +208,9 @@ $contenu_page = <<<EOF
 </div>
     </form>
     <div class="tabcontent" id="donnees">
-        $contenu_page
+	<?php
+		echo $contenu_page;
+	?>
     </div>
     <br/>
     Application de test SI - Leo QUILLOT & Felix DELESALLE
@@ -235,7 +241,4 @@ $contenu_page = <<<EOF
 </body>
 
 
-<?php
-echo $contenu_page;
-?>
 
