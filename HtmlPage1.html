@@ -22,9 +22,9 @@
             </div>
             <div class="modal-body" style="padding-top:20px">
                 <div style="display:flex; flex-direction:column; align-items:center">
-                    <input type="text" name="Login" placeholder="Utilisateur" style="width:300px;margin-bottom:8px" />
-                    <input type="password" name="password" placeholder="Mot de passe" style="width: 300px; margin-top: 8px;margin-bottom:16px" />
-                    <input name="bouton_valider" type="submit" value="Connexion" style="width:150px" />
+                    <input type="text" id="Login" placeholder="Utilisateur" style="width:300px;margin-bottom:8px" />
+                    <input type="password" id="password_input" placeholder="Mot de passe" style="width: 300px; margin-top: 8px;margin-bottom:16px" />
+                    <input name="btn_connexion" type="button" value="Connexion" onclick="Login()" style="width:150px" />
                 </div>
             </div>
             <div class="modal-footer">
@@ -93,7 +93,7 @@
                     <th>N° Sécurité Sociale</th>
                     <th>Actions</th>
                 </tr>
-                <tr>
+                <tr id="1">
                     <td>QUILLOT Léo</td>
                     <td>25/03/2000</td>
                     <td>90 bis Rue Saint Ausone, 16000, Angoulême</td>
@@ -103,11 +103,11 @@
                     <td>
                         <div class="btn-group">
                             <input type="button" onclick="edit()" value="Modif" />
-                            <input type="button" onclick="suppr()" value="Suppr" />
+                            <input type="button" onclick="suppr(1)" value="Suppr" />
                         </div>
                     </td>
                 </tr>
-                <tr>
+                <tr id="2">
                     <td>DELESALLE Felix</td>
                     <td>25/10/2000</td>
                     <td>11 rue de Paris, 14100, Lisieux</td>
@@ -117,7 +117,7 @@
                     <td>
                         <div>
                             <input type="button" onclick="edit()" value="Modif" />
-                            <input type="button" onclick="suppr()" value="Suppr" />
+                            <input type="button" onclick="suppr(2)" value="Suppr" />
                         </div>
                     </td>
                 </tr>
@@ -128,6 +128,14 @@
     Application de test SI - Leo QUILLOT & Felix DELESALLE
     <script>
         document.getElementById("defaultOpen").click();
+
+        function Login() {
+            var user = document.getElementById("Login").value;
+            var passwrd = document.getElementById("password_input").value;
+            if (user != null && passwrd != null) {
+
+            }
+        }
 
         function openCity(evt, cityName) {
             // Declare all variables
@@ -173,6 +181,10 @@
             if (event.target == modal) {
                 modal.style.display = "none";
             }
+        }
+
+        function suppr(id){
+            document.getElementById(id).style.display = "none";
         }
     </script>
 </body>

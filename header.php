@@ -18,7 +18,7 @@ if (! empty($Nom)) {
       $connexion->inserer("test", "Id,Nom", "NULL,'$Nom'");
 }
 $liste_personnels = $connexion->consulter("Nom,Prenom,Naiss,Adresse,CodePostal,Ville,Telephone,Mail,Secu", "test", "", "", "", "", "", "");
-$i = 0;
+$i = -1;
 foreach ($liste_personnels as $data) {
     $i ++;
     $Nom = ! empty($data['Nom']) ? utf8_encode($data['Nom']) : "";
@@ -31,7 +31,7 @@ foreach ($liste_personnels as $data) {
 	$Mail = ! empty($data['Mail']) ? utf8_encode($data['Mail']) : "";
 	$Secu = ! empty($data['Secu']) ? utf8_encode($data['Secu']) : "";
     $liste .= <<<EOF
-    <tr>
+    <tr id="$i">
     	<td>$Nom $Prenom</td>
 		<td>$Date</td>
 		<td>$Adresse, $CodePostal, $Ville</td>
@@ -40,13 +40,14 @@ foreach ($liste_personnels as $data) {
 		<td>$Secu</td>
 		<td>
 			<div class="btn-group">
-				<input type="button" onclick="edit()" value="Modif"/>
-				<input type="button" onclick="suppr()" value="Suppr"/>
+				<input type="button" onclick="edit($i)" value="Modif" disabled/>
+				<input type="button" onclick="suppr($i)" value="Suppr" disabled/>
 			</div>
 		</td>
     </tr>
     EOF;
 }
+
 $contenu_page = <<<EOF
     <div id="div_flow">
         <table class="center">
@@ -64,7 +65,7 @@ $contenu_page = <<<EOF
     </div>
 
 EOF;
-echo <<<EOF
+?>
  <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -88,10 +89,15 @@ echo <<<EOF
                 <h2>Connexion</h2>
             </div>
             <div class="modal-body" style="padding-top:20px">
+                <?php if(isset($_GET['error'])){ ?>
+                    <p class="error"> <?php echo $_GET['error']; ?> </p> 
+                <?php } ?>
                 <div style="display:flex; flex-direction:column; align-items:center">
-                    <input type="text" name="Login" placeholder="Utilisateur" style="width:300px;margin-bottom:8px" />
-                    <input type="password" name="password" placeholder="Mot de passe" style="width: 300px; margin-top: 8px;margin-bottom:16px" />
-                    <input name="bouton_valider" type="submit" value="Connexion" style="width:150px" />
+                    <form action="login.php" method="post">
+                        <input type="text" name="Login" placeholder="Utilisateur" style="width:300px;margin-bottom:8px" />
+                        <input type="password" name="password" placeholder="Mot de passe" style="width: 300px; margin-top: 8px;margin-bottom:16px" />
+                        <input name="bouton_valider" type="submit" value="Connexion" style="width:150px" />
+                    </form>
                 </div>
             </div>
             <div class="modal-footer">
@@ -146,11 +152,12 @@ echo <<<EOF
 </div>
     </form>
     <div class="tabcontent" id="donnees">
-        $contenu_page
+        <?php echo $contenu_page; ?>
     </div>
     <br/>
     Application de test SI - Leo QUILLOT & Felix DELESALLE
-        <script>
+
+<script>
         document.getElementById("defaultOpen").click();
 
         function openCity(evt, cityName) {
@@ -173,7 +180,39 @@ echo <<<EOF
             document.getElementById(cityName).style.display = "block";
             evt.currentTarget.className += " active";
         }
+
+        var modal = document.getElementById("LoginModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("modalBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks on the button, open the modal
+        btn.onclick = function () {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function suppr(id){
+            document.getElementById(id).style.display = "none";
+            mysql_query("delete from test where Id="+ id +);
+        }
+
+        function edit(id){
+            alert('Modification pas implémentée');
+        }
     </script>
 </body>
-
-EOF;
