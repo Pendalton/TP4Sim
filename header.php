@@ -1,12 +1,14 @@
 <?php
 // Do something taht I don't understand
 require_once ('./mysql/ControleurConnexion.php');
+require_once ('./mysql/Requete_Suppression.php');
 
 // Variables declaration
 $Nom = isset($_GET['Nom']) ? $_GET['Nom'] : NULL;
 $contenu_page = null;
 $liste = ! empty($liste) ? $liste : null;
 $connexion = new ControleurConnexion();
+$suppression = new Requete_Suppression();
 $str = file_get_contents('data/laposte_hexasmal.json');
 $json = json_decode($str, true); // decode the JSON into an associative array
 $code_postal_array = array();
@@ -34,8 +36,8 @@ foreach ($liste_personnels as $data) {
 		<td>$Secu</td>
 		<td>
 			<div class="btn-group">
-				<input type="button" onclick="edit($i)" value="Modif" disabled/>
-				<input type="button" onclick="suppr($i)" value="Suppr" disabled/>
+				<input type="button" onclick="edit($i)" value="Modif"/>
+				<input type="button" onclick="suppr($i)" value="Suppr"/>
 			</div>
 		</td>
     </tr>
@@ -373,7 +375,7 @@ if (! empty($Nom)) {
 
         function suppr(id){
             document.getElementById(id).style.display = "none";
-            mysql_query("delete from test where Id="+ id +);
+			$suppression->query("test","Id ="+id,"","");
         }
 
         function edit(id){
