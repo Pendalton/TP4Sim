@@ -1,22 +1,15 @@
 <?php
- //echo " <div style=\"color:#ff00ff;\"> GET<pre>", print_r ( $_GET ), "</pre></div>";
-$liste = ! empty($liste) ? $liste : null;
+// Do something taht I don't understand
 require_once ('./mysql/ControleurConnexion.php');
-$connexion = new ControleurConnexion();
 
+// Variables declaration
+$Nom = isset($_GET['Nom']) ? $_GET['Nom'] : NULL;
+$contenu_page = null;
+$liste = ! empty($liste) ? $liste : null;
+$connexion = new ControleurConnexion();
 $str = file_get_contents('data/laposte_hexasmal.json');
 $json = json_decode($str, true); // decode the JSON into an associative array
 $code_postal_array = array();
-
-for($i = 0; $i<sizeof($json); $i++)
-{
-	array_push($code_postal_array, $json[$i]['fields']['code_postal']);
-}
-
-$Nom = isset($_GET['Nom']) ? $_GET['Nom'] : NULL;
-if (! empty($Nom)) {
-      $connexion->inserer("test", "Id,Nom", "NULL,'$Nom'");
-}
 $liste_personnels = $connexion->consulter("Nom,Prenom,Naiss,Adresse,CodePostal,Ville,Telephone,Mail,Secu", "test", "", "", "", "", "", "");
 $i = -1;
 foreach ($liste_personnels as $data) {
@@ -30,8 +23,9 @@ foreach ($liste_personnels as $data) {
 	$Telephone = ! empty($data['Telephone']) ? utf8_encode($data['Telephone']) : "";
 	$Mail = ! empty($data['Mail']) ? utf8_encode($data['Mail']) : "";
 	$Secu = ! empty($data['Secu']) ? utf8_encode($data['Secu']) : "";
-    $liste .= <<<EOF
-    <tr id="$i">
+    $liste .= 
+<<<EOF
+    <tr>
     	<td>$Nom $Prenom</td>
 		<td>$Date</td>
 		<td>$Adresse, $CodePostal, $Ville</td>
@@ -45,28 +39,210 @@ foreach ($liste_personnels as $data) {
 			</div>
 		</td>
     </tr>
-    EOF;
+EOF;
 }
-
-$contenu_page = <<<EOF
+	$contenu_page = 
+<<<EOF
     <div id="div_flow">
         <table class="center">
             <tr id="entete_tableau">
                 <th>Nom</th>
                 <th>Date Naissance</th>
                 <th>Adresse</th>
-                <th>Téléphone</th>
+                <th>TÃ©lÃ©phone</th>
                 <th>Mail</th>
-                <th>N° Sécurité Sociale</th>
+                <th>NÂ° SÃ©curitÃ© Sociale</th>
                 <th>Actions</th>
             </tr>
             $liste
         </table>
     </div>
-
 EOF;
+
+// Fill the dictionary that associate 'code_postal' and 'town' and sort it by 'code_postal'
+for($i = 0; $i<sizeof($json); $i++)
+{	
+	$code = $json[$i]['fields']['code_postal'];
+	$town = $json[$i]['fields']['nom_de_la_commune'];
+	if(!in_array($code, $code_postal_array))
+	{
+		$code_postal_array[$code] = array();
+	}
+	array_push($code_postal_array[$code], $town);
+}
+ksort($code_postal_array);
+
+// Do something taht I don't understand
+if (! empty($Nom)) {
+      $connexion->inserer("test", "Id,Nom", "NULL,'$Nom'");
+}
+
+// NEW
+
 ?>
- <!DOCTYPE html>
+
+<script>
+	// console.log('Script begins !');
+	// Variables declaration
+	//const js_code_postal_array = [<?php //echo '"'.implode('","',  array_keys($code_postal_array) ).'"' ?>];
+	//const dlOptions = js_code_postal_array.map(o => {return [`<option value="${o}"></option>`, o.toLowerCase()];});
+	document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+
+	function completeDataList(e, tag, list_tag, max_ch=99999)
+	// tag : str, the html tag of the input
+	// list_tag : str, the html tag of the completion list
+	// max_ch : int, the maximum number of character in the text input
+	{
+		
+		var dlOptions = null;
+		document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+		
+		switch (tag)
+		{
+			case 'code_postal_tag':
+				var js_code_postal_array = [<?php echo '"'.implode('","',  array_keys($code_postal_array) ).'"' ?>];
+				dlOptions = js_code_postal_array.map(o => {return [`<option value="${o}"></option>`, o.toLowerCase()];});
+				break;
+			case 'ville_tag':
+				console.log("case ville tag");
+				var code_postal_widget = document.getElementById('code_postal_tag');
+				console.log(code_postal_widget);
+				if(code_postal_widget)
+				{
+					var code_postal = code_postal_widget.value;
+					// console.log(code_postal);
+					document.cookie = "code_postal = " + String(code_postal);
+					var debug_array = [<?php echo '"'.implode('","',  array_keys($_COOKIE) ).'"' ?>];
+					console.log(debug_array);
+					var js_variable_as_placeholder = <?= json_encode($code_postal_array[$_COOKIE['code_postal']], JSON_HEX_TAG); ?>;
+					console.log(js_variable_as_placeholder);
+					// console.log($_COOKIE['code_postale'])
+					var js_ville_array = [<?php echo '"'.implode('","',  $code_postal_array[$_COOKIE['code_postal']] ).'"' ?>];
+					dlOptions = js_ville_array.map(o => {return [`<option value="${o}"></option>`, o.toLowerCase()];});
+				}
+				break;
+			default:
+				//dlOptions = null;
+		}
+		
+
+		var element = document.getElementById(tag);
+		if(element && dlOptions)
+		{
+			var text = element.value;
+    		var fill = val => document.getElementById(list_tag).innerHTML = val;
+    		if(!e.target.value) 
+			{
+        		fill(dlOptions.reduce((sum, [html]) => sum + html, ''));
+    		} 
+			else if(!(e instanceof InputEvent)) 
+			{ // OR: else if(!e.inputType)
+        		e.target.blur();
+    		} 
+			else 
+			{
+        		var inputValue = e.target.value.toLowerCase();
+        		let result = '';
+				if(text.length < max_ch)
+				{
+        			for (var [html, valuePattern] of dlOptions) 
+					{
+            			if (!valuePattern.indexOf(inputValue)) 
+						{
+            	    		result += html;
+            			} 
+						else if (result) 
+						{
+            	    		break;
+            			}
+        			}
+				}
+        		fill(result);
+    		}
+		}
+
+	}
+
+	// Function called by text input when focus in, fill the list of possible completion
+	function fillDataListIfEmpty(tag, list_tag, max_ch=99998) 
+	// tag : str, the html tag of the input
+	// list_tag : str, the html tag of the completion list
+	// max_ch : int, the maximum number of character in the text input
+	{
+		var text = document.getElementById(tag).value;
+    	if(!document.getElementById(list_tag).innverHTML && text.length < max_ch) 
+		{
+        	completeDataList({ target: {} });
+    	}
+	}
+
+	// Function called by text input when focus out, changes the style depending of the validity of the content
+	function checkValidState(tag, max_ch=-1)
+	// tag : str, the html tag of the input
+	// max_ch : int, the maximum number of character in the text input
+	{
+		document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+		var js_array;
+		switch (tag)
+		{
+			case 'code_postal_tag':
+				js_array = [<?php echo '"'.implode('","',  array_keys($code_postal_array) ).'"' ?>];
+				break;
+			case 'ville_tag':
+				var code_postal_widget = document.getElementById('code_postal_tag');
+				if(code_postal_widget)
+				{
+					var code_postal = code_postal_widget.value;
+					console.log(code_postal);
+					document.cookie = "code_postal = " + String(code_postal);
+					js_array = [<?php echo '"'.implode('","',  $code_postal_array[$_COOKIE['code_postal']] ).'"' ?>];
+				}
+				break;
+			default:
+		}
+
+		var text = document.getElementById(tag).value;
+		console.log(text.length < max_ch);
+		console.log(!js_array.includes(text));
+		console.log(max_ch);
+		if(text.length < max_ch || !js_array.includes(text))
+		{
+			document.getElementById(tag).style.backgroundColor = "red";
+		}
+		else
+		{
+			document.getElementById(tag).style.backgroundColor = null;
+		}
+	}
+
+	// Handle the switch between tabs
+	function openCity(evt, cityName) 
+	// evt : Event, the button that was clicked
+	// cityName : str, name of the new tab
+	{
+	// Declare all variables
+	var i, tabcontent, tablinks;
+
+	// Get all elements with class="tabcontent" and hide them
+	tabcontent = document.getElementsByClassName("tabcontent");
+	for (i = 0; i < tabcontent.length; i++) 
+	{
+		tabcontent[i].style.display = "none";
+	}
+
+	// Get all elements with class="tablinks" and remove the class "active"
+	tablinks = document.getElementsByClassName("tablinks");
+	for (i = 0; i < tablinks.length; i++) 
+	{
+		tablinks[i].className = tablinks[i].className.replace(" active", "");
+	}
+
+	// Show the current tab, and add an "active" class to the button that opened the tab
+	document.getElementById(cityName).style.display = "block";
+	evt.currentTarget.className += " active";
+	}
+</script>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8" />
@@ -77,7 +253,7 @@ EOF;
 
     <div class="tab">
         <button class="tablinks" onclick="openCity(event, 'formulaire')" id="defaultOpen">Formulaire</button>
-        <button class="tablinks" onclick="openCity(event, 'donnees')">Données</button>
+        <button class="tablinks" onclick="openCity(event, 'donnees')">Donnï¿½es</button>
 
         <button class="tablinks" id="modalBtn" style="float:right">Se connecter</button>
     </div>
@@ -113,7 +289,7 @@ EOF;
                 <div style="margin-right:10px">
                     <p>Saisir le nom :</p>
                     <input type="text" name="Nom" placeholder="NOM" />
-                    <input type="text" name="Prenom" placeholder="Prénom" />
+                    <input type="text" name="Prenom" placeholder="Prï¿½nom" />
                 </div>
                 <div>
                     <p>Saisir la date de naissance :</p>
@@ -123,12 +299,15 @@ EOF;
     <div>
     	<p>Saisir l'adresse</p>
     	<input type="text" name="Adresse" placeholder="Adresse"/>
-    	<input type="text" name="CodePostal" placeholder="Code Postal"/>
-    	<input type="text" name="Ville" placeholder="Ville"/>
+		<input type="text" name="CodePostal" placeholder="Code Postal" minlength="5" maxlength="5" required id="code_postal_tag" list="code_postal_list" oninput="completeDataList(event, 'code_postal_tag', 'code_postal_list', 5)" onfocus="fillDataListIfEmpty('code_postal_tag', 'code_postal_list', 5)" onfocusout="checkValidState('code_postal_tag', 5)"/>
+		<datalist id="code_postal_list"></datalist>
+		<!-- <input type="text" name="Ville" placeholder="Ville"/> -->
+		<input type="text" name="Ville" placeholder="Ville"  required id="ville_tag" list="ville_list" oninput="completeDataList(event, 'ville_tag', 'ville_list')" onfocus="fillDataListIfEmpty('ville_tag', 'ville_list')" onfocusout="checkValidState('ville_tag')"/>
+		<datalist id="ville_list"></datalist>
     </div>
     <div style="display:flex">
                 <div style="margin-right:10px">
-                    <p>Saisir le numéro de téléphone :</p>
+                    <p>Saisir le numï¿½ro de tï¿½lï¿½phone :</p>
                     <input type="tel" name="Telephone" style="width:100%" />
                 </div>
                 <div style="margin-left:10px">
@@ -138,7 +317,7 @@ EOF;
             </div>
     <div style="display:flex">
                 <div style="margin-right:10px">
-                    <p>Saisir le numéro de sécurité sociale :</p>
+                    <p>Saisir le numï¿½ro de sï¿½curitï¿½ sociale :</p>
                     <input type="text" name="Secu" style="width:100%"/>
                 </div>
                 <div style="margin-left:10px">
@@ -146,6 +325,10 @@ EOF;
                     <input type="text" name="Password" />
                 </div>
             </div>
+    <div>
+	    <p>Saisir le numero de securite social</p>
+	    <input type="text" name="Secu" />
+    </div>
     <div>
 	    <input name="bouton_valider" type="submit" value="Valider" />
     </div>
@@ -156,30 +339,12 @@ EOF;
     </div>
     <br/>
     Application de test SI - Leo QUILLOT & Felix DELESALLE
+    <script>
+		// Select the first tab
+		document.getElementById("defaultOpen").click();
 
-<script>
-        document.getElementById("defaultOpen").click();
 
-        function openCity(evt, cityName) {
-            // Declare all variables
-            var i, tabcontent, tablinks;
 
-            // Get all elements with class="tabcontent" and hide them
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-
-            // Get all elements with class="tablinks" and remove the class "active"
-            tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-
-            // Show the current tab, and add an "active" class to the button that opened the tab
-            document.getElementById(cityName).style.display = "block";
-            evt.currentTarget.className += " active";
-        }
 
         var modal = document.getElementById("LoginModal");
 
@@ -212,7 +377,7 @@ EOF;
         }
 
         function edit(id){
-            alert('Modification pas implémentée');
+            alert('Modification pas implï¿½mentï¿½e');
         }
     </script>
 </body>
