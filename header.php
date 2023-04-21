@@ -1,3 +1,9 @@
+<script>
+// init the value of cookie variables
+document.cookie = "code_postal = 01000";
+document.cookie = "id = " + String(0);
+</script>
+
 <?php
 // Do something taht I don't understand
 require_once ('./mysql/ControleurConnexion.php');
@@ -79,28 +85,15 @@ if (! empty($Nom)) {
       $connexion->inserer("test", "Id,Nom", "NULL,'$Nom'");
 }
 
-// NEW
-
 ?>
 
 <script>
-	// console.log('Script begins !');
-	// Variables declaration
-	//const js_code_postal_array = [<?php //echo '"'.implode('","',  array_keys($code_postal_array) ).'"' ?>];
-	//const dlOptions = js_code_postal_array.map(o => {return [`<option value="${o}"></option>`, o.toLowerCase()];});
-	
-	//document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
-
 	function completeDataList(e, tag, list_tag, max_ch=99999)
 	// tag : str, the html tag of the input
 	// list_tag : str, the html tag of the completion list
 	// max_ch : int, the maximum number of character in the text input
-	{
-		
-		var dlOptions = null;
-		
-		//document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
-		
+	{	
+		var dlOptions = null;		
 		switch (tag)
 		{
 			case 'code_postal_tag':
@@ -108,28 +101,22 @@ if (! empty($Nom)) {
 				dlOptions = js_code_postal_array.map(o => {return [`<option value="${o}"></option>`, o.toLowerCase()];});
 				break;
 			case 'ville_tag':
-				console.log("case ville tag");
 				var code_postal_widget = document.getElementById('code_postal_tag');
-				console.log(code_postal_widget);
 				if(code_postal_widget)
 				{
 					var code_postal = code_postal_widget.value;
-					// console.log(code_postal);
 					document.cookie = "code_postal = " + String(code_postal);
 					var debug_array = [<?php echo '"'.implode('","',  array_keys($_COOKIE) ).'"' ?>];
-					console.log(debug_array);
-					var js_variable_as_placeholder = <?= json_encode($code_postal_array[$_COOKIE['code_postal']], JSON_HEX_TAG); ?>;
-					console.log(js_variable_as_placeholder);
-					// console.log($_COOKIE['code_postale'])
-					var js_ville_array = [<?php echo '"'.implode('","',  $code_postal_array[$_COOKIE['code_postal']] ).'"' ?>];
-					dlOptions = js_ville_array.map(o => {return [`<option value="${o}"></option>`, o.toLowerCase()];});
+					if(debug_array.includes('code_postal'))
+					{
+						var js_ville_array = [<?php echo '"'.implode('","',  $code_postal_array[$_COOKIE['code_postal']] ).'"' ?>];
+						dlOptions = js_ville_array.map(o => {return [`<option value="${o}"></option>`, o.toLowerCase()];});
+					}
 				}
 				break;
 			default:
-				//dlOptions = null;
 		}
 		
-
 		var element = document.getElementById(tag);
 		if(element && dlOptions)
 		{
@@ -184,10 +171,7 @@ if (! empty($Nom)) {
 	function checkValidState(tag, max_ch=-1)
 	// tag : str, the html tag of the input
 	// max_ch : int, the maximum number of character in the text input
-	{
-		
-		//document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
-		
+	{		
 		var js_array;
 		switch (tag)
 		{
@@ -199,7 +183,6 @@ if (! empty($Nom)) {
 				if(code_postal_widget)
 				{
 					var code_postal = code_postal_widget.value;
-					console.log(code_postal);
 					document.cookie = "code_postal = " + String(code_postal);
 					js_array = [<?php echo '"'.implode('","',  $code_postal_array[$_COOKIE['code_postal']] ).'"' ?>];
 				}
@@ -208,9 +191,6 @@ if (! empty($Nom)) {
 		}
 
 		var text = document.getElementById(tag).value;
-		console.log(text.length < max_ch);
-		console.log(!js_array.includes(text));
-		console.log(max_ch);
 		if(text.length < max_ch || !js_array.includes(text))
 		{
 			document.getElementById(tag).style.backgroundColor = "red";
@@ -307,7 +287,6 @@ if (! empty($Nom)) {
     	<input type="text" name="Adresse" placeholder="Adresse"/>
 		<input type="text" name="CodePostal" placeholder="Code Postal" minlength="5" maxlength="5" required id="code_postal_tag" list="code_postal_list" oninput="completeDataList(event, 'code_postal_tag', 'code_postal_list', 5)" onfocus="fillDataListIfEmpty('code_postal_tag', 'code_postal_list', 5)" onfocusout="checkValidState('code_postal_tag', 5)"/>
 		<datalist id="code_postal_list"></datalist>
-		<!-- <input type="text" name="Ville" placeholder="Ville"/> -->
 		<input type="text" name="Ville" placeholder="Ville"  required id="ville_tag" list="ville_list" oninput="completeDataList(event, 'ville_tag', 'ville_list')" onfocus="fillDataListIfEmpty('ville_tag', 'ville_list')" onfocusout="checkValidState('ville_tag')"/>
 		<datalist id="ville_list"></datalist>
     </div>

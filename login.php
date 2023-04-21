@@ -24,7 +24,7 @@ if (isset($_POST['Login']) && isset($_POST['password'])) {
 
 		foreach ($liste_personnels as $data){
 			if($login == $data['Mail'] && $password == $data['password']){
-				echo "Trouvé, " + $data['Prenom'];
+				echo "Trouvï¿½, " . $data['Prenom'];
 				break;
 			}
 		}
