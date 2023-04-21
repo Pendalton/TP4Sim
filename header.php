@@ -27,7 +27,7 @@ foreach ($liste_personnels as $data) {
 	$Secu = ! empty($data['Secu']) ? utf8_encode($data['Secu']) : "";
     $liste .= 
 <<<EOF
-    <tr>
+    <tr id="$i">
     	<td>$Nom $Prenom</td>
 		<td>$Date</td>
 		<td>$Adresse, $CodePostal, $Ville</td>
@@ -252,10 +252,10 @@ if (! empty($Nom)) {
 <title>Test SI</title>
 </head>
 <body>
-
+<img class="background" src="P-Plant-vs-Inkling.jpg" />
     <div class="tab">
         <button class="tablinks" onclick="openCity(event, 'formulaire')" id="defaultOpen">Formulaire</button>
-        <button class="tablinks" onclick="openCity(event, 'donnees')">Donn�es</button>
+        <button class="tablinks" onclick="openCity(event, 'donnees')">Données</button>
 
         <button class="tablinks" id="modalBtn" style="float:right">Se connecter</button>
     </div>
@@ -291,7 +291,7 @@ if (! empty($Nom)) {
                 <div style="margin-right:10px">
                     <p>Saisir le nom :</p>
                     <input type="text" name="Nom" placeholder="NOM" />
-                    <input type="text" name="Prenom" placeholder="Pr�nom" />
+                    <input type="text" name="Prenom" placeholder="Prénom" />
                 </div>
                 <div>
                     <p>Saisir la date de naissance :</p>
@@ -309,7 +309,7 @@ if (! empty($Nom)) {
     </div>
     <div style="display:flex">
                 <div style="margin-right:10px">
-                    <p>Saisir le num�ro de t�l�phone :</p>
+                    <p>Saisir le numéro de téléphone :</p>
                     <input type="tel" name="Telephone" style="width:100%" />
                 </div>
                 <div style="margin-left:10px">
@@ -319,7 +319,7 @@ if (! empty($Nom)) {
             </div>
     <div style="display:flex">
                 <div style="margin-right:10px">
-                    <p>Saisir le num�ro de s�curit� sociale :</p>
+                    <p>Saisir le numéro de sécurité sociale :</p>
                     <input type="text" name="Secu" style="width:100%"/>
                 </div>
                 <div style="margin-left:10px">
@@ -379,7 +379,7 @@ if (! empty($Nom)) {
         }
 
         function edit(id){
-            alert('Modification pas impl�ment�e');
+            alert('Modification pas implémentée');
         }
     </script>
 </body>
