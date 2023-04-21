@@ -27,9 +27,9 @@ class Requete_Suppression
 		$sth->execute();
 		
 		//enregistre la requete dans sif/log
-		require_once ('Enregistreur.php');
-		$enregistreur = new Enregistreur ( $req );
-		$enregistreur->ecrire ();
+		// require_once ('Enregistreur.php');
+		// $enregistreur = new Enregistreur ( $req );
+		// $enregistreur->ecrire ();
 	}
 	public function destruction()
 	{$connection=NULL;}

@@ -8,7 +8,7 @@ $Nom = isset($_GET['Nom']) ? $_GET['Nom'] : NULL;
 $contenu_page = null;
 $liste = ! empty($liste) ? $liste : null;
 $connexion = new ControleurConnexion();
-$suppression = new Requete_Suppression();
+$suppression = new Requete_Suppression('Localhost', 'test', 'root', '');
 $str = file_get_contents('data/laposte_hexasmal.json');
 $json = json_decode($str, true); // decode the JSON into an associative array
 $code_postal_array = array();
@@ -88,7 +88,8 @@ if (! empty($Nom)) {
 	// Variables declaration
 	//const js_code_postal_array = [<?php //echo '"'.implode('","',  array_keys($code_postal_array) ).'"' ?>];
 	//const dlOptions = js_code_postal_array.map(o => {return [`<option value="${o}"></option>`, o.toLowerCase()];});
-	document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+	
+	//document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
 
 	function completeDataList(e, tag, list_tag, max_ch=99999)
 	// tag : str, the html tag of the input
@@ -97,7 +98,8 @@ if (! empty($Nom)) {
 	{
 		
 		var dlOptions = null;
-		document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+		
+		//document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
 		
 		switch (tag)
 		{
@@ -183,7 +185,9 @@ if (! empty($Nom)) {
 	// tag : str, the html tag of the input
 	// max_ch : int, the maximum number of character in the text input
 	{
-		document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+		
+		//document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+		
 		var js_array;
 		switch (tag)
 		{
@@ -345,9 +349,6 @@ if (! empty($Nom)) {
 		// Select the first tab
 		document.getElementById("defaultOpen").click();
 
-
-
-
         var modal = document.getElementById("LoginModal");
 
         // Get the button that opens the modal
@@ -355,6 +356,16 @@ if (! empty($Nom)) {
 
         // Get the <span> element that closes the modal
         var span = document.getElementsByClassName("close")[0];
+
+		function suppr(id){
+            document.getElementById(id).style.display = "none";
+			document.cookie = "id = " + String(id);
+			<?php $suppression->query("test","Id =".$_COOKIE['id'],"",""); ?>
+        }
+
+        function edit(id){
+            alert('Modification pas implémentée');
+        }
 
         // When the user clicks on the button, open the modal
         btn.onclick = function () {
@@ -371,15 +382,6 @@ if (! empty($Nom)) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
-        }
-
-        function suppr(id){
-            document.getElementById(id).style.display = "none";
-			$suppression->query("test","Id ="+id,"","");
-        }
-
-        function edit(id){
-            alert('Modification pas implémentée');
         }
     </script>
 </body>
